@@ -39,14 +39,18 @@ bot.on('contact', async (msg) => {
   const phone = msg.contact.phone_number;
 
   try {
-    await axios.post(WEB_APP_URL, {
+    const response = await axios.post(WEB_APP_URL, {
       name: name,
       phone: phone
     });
 
-    bot.sendMessage(msg.chat.id, "Thank you! ✅ Our team will contact you soon.");
+    if (response.data.result === "success") {
+      bot.sendMessage(msg.chat.id, "Thank you! ✅ Our team will contact you soon.");
+    } else {
+      bot.sendMessage(msg.chat.id, "Oops! Something went wrong.");
+    }
   } catch (error) {
-    bot.sendMessage(msg.chat.id, "Something went wrong. Please try again.");
+    bot.sendMessage(msg.chat.id, "Oops! Something went wrong.");
   }
 });
 
@@ -63,13 +67,16 @@ bot.on('message', async (msg) => {
   const text = msg.text || "";
 
   try {
-    await axios.post(WEB_APP_URL, {
+    const response = await axios.post(WEB_APP_URL, {
       name: name,
       message: text
     });
 
-    // Optional: reply to user
-    bot.sendMessage(chatId, "Thanks! ✅ We received your message.");
+    if (response.data.result === "success") {
+      bot.sendMessage(chatId, "Thanks! ✅ We received your message.");
+    } else {
+      bot.sendMessage(chatId, "Oops! Something went wrong.");
+    }
   } catch (error) {
     bot.sendMessage(chatId, "Oops! Something went wrong.");
   }
